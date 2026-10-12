@@ -1,0 +1,64 @@
+name: gopro
+model_type: ImageEventRestorationModelFFTEMA
+scale: 1
+num_gpu: 1
+manual_seed: 3407
+
+datasets:
+  test:
+    name: gopro-val
+    type: GoProDataset
+
+    dataroot: ./datasets/GoPro/test
+    dataroot_voxel: ./datasets/GoPro/test/voxel
+
+    gt_size: ~
+    norm_voxel: true
+    use_hflip: false
+    use_rot: false
+
+    blur_dir_name: blur
+    gt_dir_name: gt
+    voxel_key: voxel
+    strict_pair: true
+
+    io_backend:
+      type: disk
+
+dataset_name: GoPro
+
+network_g:
+  type: RTEIR
+  inChannels_img: 3
+  inChannels_event: 6
+  outChannels: 3
+
+path:
+  pretrain_network_g: ./checkpoints/rteir_gopro.pth
+  strict_load_g: true
+  resume_state: ~
+
+val:
+  save_img: true
+  save_gt: false
+  grids: ~
+  crop_size: ~
+  max_minibatch: 8
+  rgb2bgr: true
+  use_image: true
+
+  metrics:
+    psnr:
+      type: calculate_psnr
+      crop_border: 0
+      test_y_channel: false
+    ssim:
+      type: calculate_ssim
+      crop_border: 0
+      test_y_channel: false
+    de2000:
+      type: calculate_de2000
+
+dist_params:
+  backend: nccl
+  port: 29500

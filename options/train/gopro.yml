@@ -1,0 +1,127 @@
+name: gopro
+model_type: ImageEventRestorationModelFFTEMA
+scale: 1
+num_gpu: 1
+manual_seed: 3407
+
+datasets:
+  train:
+    name: gopro-train
+    type: GoProDataset
+
+    dataroot: ./datasets/GoPro/train
+    dataroot_voxel: ./datasets/GoPro/train/voxel
+
+    gt_size: 640
+    norm_voxel: true
+    use_hflip: true
+    use_rot: true
+
+    blur_dir_name: blur
+    gt_dir_name: gt
+    voxel_key: voxel
+    strict_pair: true
+
+    io_backend:
+      type: disk
+
+    use_shuffle: true
+    num_worker_per_gpu: 4
+    batch_size_per_gpu: 4
+    dataset_enlarge_ratio: 1
+    prefetch_mode: cpu
+    num_prefetch_queue: 2
+
+  val:
+    name: gopro-val
+    type: GoProDataset
+
+    dataroot: ./datasets/GoPro/test
+    dataroot_voxel: ./datasets/GoPro/test/voxel
+
+    gt_size: ~
+    norm_voxel: true
+    use_hflip: false
+    use_rot: false
+
+    blur_dir_name: blur
+    gt_dir_name: gt
+    voxel_key: voxel
+    strict_pair: true
+
+    io_backend:
+      type: disk
+
+dataset_name: GoPro
+
+network_g:
+  type: RTEIR
+  inChannels_img: 3
+  inChannels_event: 6
+  outChannels: 3
+
+path:
+  pretrain_network_g: ~
+  strict_load_g: true
+  resume_state: ~
+  training_states: ~
+
+train:
+  optim_g:
+    type: AdamW
+    lr: !!float 2e-4
+    betas: [0.9, 0.999]
+    weight_decay: !!float 1e-3
+
+  scheduler:
+    type: TrueCosineAnnealingLR
+    T_max: 600000
+    eta_min: !!float 1e-5
+
+  total_iter: 600000
+  warmup_iter: 3000
+
+  use_grad_clip: true
+  grad_clip_val: 1.0
+
+  ema_decay: 0.999
+  ema_warmup_iter: 1000
+
+  pixel_opt:
+    type: CharbonnierLoss
+    loss_weight: 1
+    reduction: mean
+
+  fft_loss_opt:
+    type: FFTLoss
+    loss_weight: 0.1
+    reduction: mean
+
+val:
+  val_freq: !!float 1e4
+  save_img: false
+  grids: ~
+  crop_size: ~
+  max_minibatch: 8
+
+  metrics:
+    psnr:
+      type: calculate_psnr
+      crop_border: 0
+      test_y_channel: false
+    ssim:
+      type: calculate_ssim
+      crop_border: 0
+      test_y_channel: false
+
+logger:
+  print_freq: 200
+  save_checkpoint_freq: !!float 1e3
+  use_tb_logger: true
+  wandb:
+    project: ~
+    resume_id: ~
+
+dist_params:
+  backend: nccl
+  port: 29500

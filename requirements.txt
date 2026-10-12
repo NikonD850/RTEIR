@@ -8,7 +8,7 @@ pyyaml
 requests
 scikit-image
 scipy
-tb-nightly
+tensorboard
 tqdm
 yapf
 h5py

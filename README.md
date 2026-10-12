@@ -24,6 +24,16 @@ pip install -e .
 
 For ONNX / TensorRT export and benchmarking, additionally install `onnx onnxsim onnxconverter-common tensorrt`.
 
+## Pretrained Models
+
+Download the pretrained RTEIR checkpoint for GoPro from [Google Drive](https://drive.google.com/file/d/1NBGOy3lLPw66DHGA8cse6__EOhYuL0EZ/view?usp=sharing) and place it at:
+
+```bash
+checkpoints/rteir_gopro.pth
+```
+
+This path is referenced by `options/test/gopro.yml` (`path.pretrain_network_g`).
+
 ## Dataset Preparation & Preprocessing
 
 RTEIR training uses GoPro RGB blur/sharp pairs plus a 6-bin signed event voxel per frame.

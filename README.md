@@ -8,7 +8,7 @@ Dawei Fan<sup>1,2*</sup>, Peihong Xin<sup>1,2*</sup>, Xiongxin Tang<sup>1,2†</
 
 ## Introduction
 
-Official PyTorch implementation of [**RTEIR**](<Under Submission>), a real-time event-guided image restoration network.
+Official PyTorch implementation of **RTEIR**, a real-time event-guided image restoration network.
 
 On GoPro at 1280x720, RTEIR runs at 41.59 FPS and 35.72 dB in FP32 on an RTX 6000 Ada, and at 142 FPS with an FP16 TensorRT engine. The same FP16 engine runs at 30.7 FPS on a Jetson AGX Thor edge platform.
 
